@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.jasper.tagplugins.jstl.core.Out;
+
 import model.user;
 
 
@@ -54,17 +56,27 @@ public class LoginServlet extends HttpServlet {
 			                        + "'";
 				Statement st=con.createStatement();
 				rs=st.executeQuery(sql);
-				if(rs!=null) {
+				
+				System.out.println("Username:"+username);
+				System.out.println("Password"+password);
+				
+				if(rs.next()== true)
+				{
 					HttpSession ht=request.getSession(true);
 					ht.setAttribute("user", username);
 					ht.setMaxInactiveInterval(30*60);
 					RequestDispatcher rd=getServletContext().getRequestDispatcher("/home.jsp");
 					rd.forward(request, response);
-					
+				}
+				else if(rs.next()==false)
+				{
+					RequestDispatcher rd=getServletContext().getRequestDispatcher("/index.jsp");
+					rd.include(request, response);
+					response.getWriter().print("<H1>Invalid username & password</H1>");
 				}
 				
-			
-			
-		}
+				}
+				
+		
 		
 }
